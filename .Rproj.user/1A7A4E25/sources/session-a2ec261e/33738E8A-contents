@@ -1,5 +1,4 @@
 # Example 2
-pacman::
 library(rvest)
 library(ggplot2)
 library(scales)
@@ -138,9 +137,9 @@ data %>%
   geom_col(fill = "#3dccc7") +
   coord_flip() +
   scale_y_continuous(
-    labels = label_number(scale_cut = cut_si("unit"))
-    ) +
-  labs(title = "Top 10 Countries by Population", x="Country", y="Population") + theme(axis.text.y = element_text(angle = 0, hjust=0.5)) + theme(axis.text.x = element_text(angle = 45, hjust=0.5))
+    labels = label_number(accuracy =1, scale_cut = cut_short_scale())
+    , breaks = seq(min(data$population), max(data$population), length.out = 5)) +
+  labs(title = "Top 10 Countries by Population", x="Country", y="Population") + theme(axis.text.y = element_text(angle = 0, hjust=0.5)) + theme(axis.text.x = element_text(angle = 45, hjust=0.5)) + geom_hline(yintercept = c(0, 332511000, 665022000, 997533000, 1330044000), color = "red") + geom_text(y=c(332511000), label = "q1") + geom_vline(xintercept = 9)
 
 
 # Plot: Top 10 countries by Area
