@@ -1,0 +1,86 @@
+# Time Series
+
+# library
+pacman::p_load(TTR, zoo, dplyr, tidyverse, tidyquant)
+pacman::p_load(xts, zoo, quantmod, tidyverse)
+
+options("getSymbols.warning4.0"=FALSE)
+options("getSymbols.yahoo.warning"=FALSE)
+
+getSymbols("AAPL", src = "yahoo", from = "2024-01-01", to = "2025-05-05")
+head(AAPL)
+tail(AAPL)
+
+getSymbols("CANBK.NS", src = "yahoo", from = "2024-01-01", to = "2025-05-05")
+tail(CANBK.NS)
+plot(CANBK.NS$CANBK.NS.Close, main = "CANBK.NS", ylab = "Price", xlab = "Date", col = "blue", lwd = 2)
+chart_Series(CANBK.NS['2025-03/2025-05'])
+str(CANBK.NS)
+df = as.data.frame(CANBK.NS)
+df %>% ggplot(., aes(x=index(df), y=CANBK.NS.Close)) + geom_line() + labs(title = "CANBK.NS", x = "Date", y = "Price") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+# ChatGPT enhanced code
+library(ggplot2)
+library(dplyr)
+library(quantmod)
+
+# Prepare data
+df <- df %>%
+  mutate(Date = index(CANBK.NS)) %>%
+  select(Date, Price = CANBK.NS.Close)
+
+# Improved plot
+ggplot(df, aes(x = Date, y = Price)) +
+  geom_line(color = "#0072B2", size = 1.2) +  # Blue line with good visibility
+  geom_smooth(method = "loess", span = 0.2, se = FALSE, color = "darkred", linetype = "dashed") +
+  labs(
+    title = "📈 Canara Bank (CANBK.NS) Stock Price Trend",
+    subtitle = "From Jan 2024 to May 2025",
+    x = "Date",
+    y = "Closing Price (INR)",
+    caption = "Data Source: Yahoo Finance via quantmod"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 18),
+    plot.subtitle = element_text(size = 13, color = "gray40"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major = element_line(color = "gray90"),
+    panel.grid.minor = element_blank()
+  ) + theme_minimal() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave("canbk_stock_plot.png", width = 12, height = 6, dpi = 300)
+
+
+
+
+
+
+# Data
+(x = round(rnorm(n=100, mean = 50, sd=10)))
+tsdata1 = ts(data = x, start = 1, end = 100)
+tsdata1
+
+tsdata2 = ts(data = x, frequency = 12, start=c(2000, 11))
+tsdata2
+plot(tsdata2)
+
+sma5 = SMA(tsdata2, n=5)
+plot(sma5)
+
+
+
+# Zoo
+# create data frame
+year = 2000:2024
+forms = round(runif(25, 100, 200))
+ 
+data <- data.frame(year, forms)
+head(data)
+
+data$ma_5 = rollmean(data$forms, k=5, align ="right", fill=NA)
+head(data)
+
+data %>% ggplot(., aes(x=year, y=forms)) + geom_line(color ='red') + geom_point(aes(y=forms)) + geom_line(aes(y=ma_5), color="blue") + geom_point(aes(y=ma_5)) + geom_label(aes(label=forms), color="red")
